@@ -20,13 +20,14 @@ function drow(mass) {
     })
 }
 
-server().then(data => drow(data));
+server().then(data => drow(JSON.parse(localStorage.getItem('users')) || data));
 
 let btn = document.querySelector('.btn');
 btn.addEventListener('click', function () {
     let select = document.querySelector('select');
     let str = '';
     let table = document.querySelector('.table');
+    let user = [];
     if (select.value != 'all') {
         for (let i = 0; i < select.value; i++) {
             server().then((item) => {
@@ -40,10 +41,15 @@ btn.addEventListener('click', function () {
             </tr>
           `
                 table.innerHTML = str;
+                user.push(item[i]);
+                localStorage.setItem('users', JSON.stringify(user));
             });
         }
     } else {
-        server().then(data => drow(data));
+        server().then(data => {
+            drow(data);
+            localStorage.setItem('users', JSON.stringify(data))
+        });
     }
 }
 )
